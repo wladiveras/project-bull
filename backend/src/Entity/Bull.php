@@ -28,11 +28,6 @@ class Bull
     private $weight;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $birthday;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $week_milk;
@@ -41,6 +36,14 @@ class Bull
      * @ORM\Column(type="integer")
      */
     private $week_food;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status;
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $birthday;
 
     public function getId(): ?int
     {
@@ -95,6 +98,18 @@ class Bull
         return $this;
     }
 
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
     public function getWeekFood(): ?int
     {
         return $this->week_food;
@@ -107,13 +122,12 @@ class Bull
         return $this;
     }
 
-
     public function toArray()
     {
         return [
-            'id'    => $this->getId(),
-            'code'  => $this->getCode(),
-            'weight' => $this->getWeight(),
+            'id'        => $this->getId(),
+            'code'      => $this->getCode(),
+            'weight'    => $this->getWeight(),
             'birthday'  => $this->getBirthday(),
             'weekMilk'  => $this->getWeekMilk(),
             'weekFood'  => $this->getWeekFood(),

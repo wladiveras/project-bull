@@ -6,6 +6,9 @@ use App\Entity\Bull;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Activation;
 
 /**
  * @method Bull|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,6 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class BullRepository extends ServiceEntityRepository
 {
     private $manager;
+    public const PAGINATOR_PER_PAGE = 2;
 
     public function __construct(
         ManagerRegistry $registry,

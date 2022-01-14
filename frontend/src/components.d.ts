@@ -10,9 +10,10 @@ declare module 'vue' {
     CarbonLogoGithub: typeof import('~icons/carbon/logo-github')['default']
     CarbonMoon: typeof import('~icons/carbon/moon')['default']
     CarbonSun: typeof import('~icons/carbon/sun')['default']
-    Counter: typeof import('./components/Counter.vue')['default']
-    Footer: typeof import('./components/Footer.vue')['default']
-    README: typeof import('./components/README.md')['default']
+    DashboardLayout: typeof import('./components/DashboardLayout.vue')['default']
+    EmptyLayout: typeof import('./components/EmptyLayout.vue')['default']
+    Header: typeof import('./components/Header.vue')['default']
+    Sidebar: typeof import('./components/Sidebar.vue')['default']
   }
 }
 

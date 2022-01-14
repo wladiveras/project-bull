@@ -1,12 +1,18 @@
-<script setup lang="ts">
-useHead({
-  title: "Projeto Bull",
-  meta: [
-    { name: "description", content: "Projeto Bull - Vuejs and symfony power" },
-  ],
-})
-</script>
-
 <template>
-  <router-view />
+  <component :is="layout">
+    <router-view />
+  </component>
 </template>
+
+<script setup lang="ts">
+import { computed } from "vue"
+import { useRouter } from "vue-router"
+
+const defaultLayout = "default"
+
+const { currentRoute } = useRouter()
+
+const layout = computed(
+  () => `${currentRoute.value.meta.layout || defaultLayout}-layout`
+)
+</script>

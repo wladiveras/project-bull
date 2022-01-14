@@ -14,6 +14,7 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create();
         $role = ['ADMIN', 'USER', 'MOD', 'VIP'];
+        $status = ['working', 'ready', 'dead'];
 
         for ($i = 0; $i < 10; $i++) {
             $customer = new Customer();
@@ -31,6 +32,7 @@ class AppFixtures extends Fixture
             $bull->setBirthday($faker->DateTime);
             $bull->setWeekMilk(mt_rand(0, 100));
             $bull->setWeekFood(mt_rand(40, 100));
+            $bull->setStatus($status[mt_rand(0, 2)]);
             $manager->persist($bull);
         }
 

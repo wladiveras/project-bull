@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * Class BullSiteController
@@ -15,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route(path="/bull")
  */
-class BullController
+class BullController extends AbstractController
 {
     private $BullRepository;
 
@@ -65,7 +67,43 @@ class BullController
 
         return new JsonResponse(['bull' => $data], Response::HTTP_OK);
     }
+    /**
+     * @Route("/list", name="list_bulls_per_page", methods={"GET"})
+     */
+    public function listBulls(PaginatorInterface $paginator, Request $request): JsonResponse
+    {
+        $page = $request->query->getInt('page', 1);
+        $getBulls = $this->BullRepository->findBy(array(), array('id' => 'DESC'));
+        $itemPerPage = 10;
+        $data = [];
 
+        $bulls = $paginator->paginate(
+            $getBulls,
+            $page,
+            $itemPerPage
+        );
+
+        foreach ($bulls as $bull) {
+            $data[] = [
+                'id'         => $bull->getId(),
+                'code'       => $bull->getCode(),
+                'weight'     => $bull->getWeight(),
+                'week_milk'  => $bull->getWeekMilk(),
+                'week_food'  => $bull->getWeekFood(),
+                'sign'       => round($bull->getWeight() * 0.5 / 15, 0),
+                'birthday'   => $bull->getBirthday(),
+            ];
+        }
+
+        $pagination = [
+            "page" => $bulls->getCurrentPageNumber(),
+            "total" => $bulls->getTotalItemCount(),
+            "totalPage" => $bulls->getTotalItemCount() / $itemPerPage,
+            "resultsPerPage" => $bulls->getItemNumberPerPage(),
+        ];
+
+        return new JsonResponse(['bulls' => $data, 'pagination' => $pagination], Response::HTTP_OK);
+    }
     /**
      * @Route("/get-all", name="get_all_bulls", methods={"GET"})
      */
