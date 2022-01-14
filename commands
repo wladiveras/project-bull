@@ -1,0 +1,17 @@
+ 
+ 
+ php container:: run command
+ >>> composer create-project symfony/skeleton .
+
+ >>> composer install
+ >>> php bin/console make:migration
+ >>> php bin/console doctrine:migrations:migrate
+ >>> php bin/console doctrine:fixtures:load
+
+
+ machine:: run command 
+ >>> docker-compose run --rm php74-service php bin/console doctrine:database:create
+
+ db container:: change .env with value
+ >>> DATABASE_URL="mysql://root:secret@mysql8-service:3306/s5-docker-setup?serverVersion=8"
+
