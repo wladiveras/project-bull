@@ -17,7 +17,7 @@
           v-else-if="
             bodyData.week_milk < 40 ||
             (bodyData.week_milk < 70 && bodyData.week_food > 40) ||
-            getAge(bodyData.birthday) > 5 ||
+            bodyData.age > 5 ||
             bodyData.sign > 18
           "
           class="inline-flex px-2 text-xs font-semibold leading-5 text-gray-800 bg-gray-100 rounded-full"
@@ -32,9 +32,7 @@
         </span>
       </h4>
 
-      <h4 v-if="bodyData.birthday">
-        Idade: {{ getAge(bodyData.birthday.date) }} anos
-      </h4>
+      <h4 v-if="bodyData.birthday">Idade: {{ bodyData.age }} anos</h4>
 
       <h4>@: {{ bodyData.sign }}</h4>
 
@@ -117,7 +115,7 @@
                   v-if="
                     bodyData.week_milk < 40 ||
                     (bodyData.week_milk < 70 && bodyData.week_food > 40) ||
-                    getAge(bodyData.birthday) > 5 ||
+                    bodyData.age > 5 ||
                     bodyData.sign > 18 ||
                     bodyData.status != 'dead'
                   "
@@ -169,20 +167,6 @@ axios
     })
     goReturn()
   })
-
-const getAge = (date) => {
-  const today = new Date()
-  const birthDate = new Date(date)
-
-  let age = today.getFullYear() - birthDate.getFullYear()
-  let month = today.getMonth() - birthDate.getMonth()
-
-  if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
-    age--
-  }
-
-  return age
-}
 
 const deleteBull = (id) => {
   axios

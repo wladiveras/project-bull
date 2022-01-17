@@ -71,10 +71,10 @@
                   class="px-6 py-4 border-b border-gray-200 whitespace-nowrap"
                 >
                   <div class="text-sm leading-5 text-gray-900">
-                    {{ getAge(bull.birthday.date) }} anos
+                    {{ bull.age }} anos
                   </div>
                   <div class="text-sm leading-5 text-gray-900">
-                    {{ getBirth(bull.birthday.date) }}
+                    {{ bull.birthday }}
                   </div>
                 </td>
                 <td
@@ -105,7 +105,7 @@
                     v-else-if="
                       bull.week_milk < 40 ||
                       (bull.week_milk < 70 && bull.week_food > 40) ||
-                      getAge(bull.birthday.date) > 5 ||
+                      bull.age > 5 ||
                       bull.sign > 18
                     "
                     class="inline-flex px-2 text-xs font-semibold leading-5 text-gray-800 bg-gray-100 rounded-full"
@@ -166,20 +166,6 @@ const getBirth = (date: string) => {
   }
 
   return newDate.toLocaleDateString("pt-BR", options)
-}
-
-const getAge = (date) => {
-  const today = new Date()
-  const birthDate = new Date(date)
-
-  let age = today.getFullYear() - birthDate.getFullYear()
-  let month = today.getMonth() - birthDate.getMonth()
-
-  if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
-    age--
-  }
-
-  return age
 }
 
 // == [AXIOS API] Axios call function

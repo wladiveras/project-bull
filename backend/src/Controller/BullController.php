@@ -62,7 +62,8 @@ class BullController extends AbstractController
             'weight'     => $bull->getWeight(),
             'week_milk'  => $bull->getWeekMilk(),
             'week_food'  => $bull->getWeekFood(),
-            'birthday'   => $bull->getBirthday(),
+            'birthday'   => Carbon::parse($bull->getBirthday())->format('d-m-Y'),
+            'age'        => Carbon::parse($bull->getBirthday())->age,
             'status'     => $bull->getStatus(),
             'sign'       => $this->getSign($bull->getWeight()),
         ];
@@ -92,7 +93,8 @@ class BullController extends AbstractController
                 'weight'     => $bull->getWeight(),
                 'week_milk'  => $bull->getWeekMilk(),
                 'week_food'  => $bull->getWeekFood(),
-                'birthday'   => $bull->getBirthday(),
+                'birthday'   => Carbon::parse($bull->getBirthday())->format('d-m-Y'),
+                'age'        => Carbon::parse($bull->getBirthday())->age,
                 'status'     => $bull->getStatus(),
                 'sign'       => $this->getSign($bull->getWeight()),
             ];
@@ -122,7 +124,8 @@ class BullController extends AbstractController
                 'weight'     => $bull->getWeight(),
                 'week_milk'  => $bull->getWeekMilk(),
                 'week_food'  => $bull->getWeekFood(),
-                'birthday'   => $bull->getBirthday(),
+                'birthday'   => Carbon::parse($bull->getBirthday())->format('d-m-Y'),
+                'age'        => Carbon::parse($bull->getBirthday())->age,
                 'status'     => $bull->getStatus(),
                 'sign'       => $this->getSign($bull->getWeight()),
             ];
@@ -168,19 +171,9 @@ class BullController extends AbstractController
             if ($bull->getWeekMilk() < 70 && $bull->getWeekFood() > 50) {
                 $totalMilkFood++;
             }
-
-            $data = [
-                'weight'     => $bull->getWeight(),
-                'week_milk'  => $bull->getWeekMilk(),
-                'week_food'  => $bull->getWeekFood(),
-                'birthday'   => $bull->getBirthday(),
-                'status'     => $bull->getStatus(),
-                'sign'       => $this->getSign($bull->getWeight()),
-            ];
         }
 
         $data = [
-
             'readyTo' => [
                 'older' => $totalOlder,
                 'sign' => $totalSign,
@@ -192,8 +185,6 @@ class BullController extends AbstractController
                 'food' => $weekFood,
                 'dead' => $weekDead,
             ],
-
-
         ];
 
         return new JsonResponse(['report' => $data], Response::HTTP_OK);
