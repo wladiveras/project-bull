@@ -32,9 +32,13 @@
         </span>
       </h4>
 
-      <h4 v-if="bodyData.birthday">Idade: {{ bodyData.age }} anos</h4>
+      <h4 v-if="bodyData.birthday">
+        Idade: {{ bodyData.age }} anos ({{ bodyData.birthday }})
+      </h4>
 
-      <h4>@: {{ bodyData.sign }}</h4>
+      <h4>
+        <b>{{ bodyData.sign }}@</b> ({{ bodyData.weight }}kg)
+      </h4>
 
       <div class="mt-6">
         <div class="mt-4">
@@ -55,14 +59,14 @@
               />
             </div>
 
-            <form @submit.prevent="register">
+            <form @submit.prevent="updateBull(bodyData.id)">
               <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
                 <div>
                   <label class="text-gray-700"> IDentificação </label>
                   <input
                     class="w-full mt-2 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
                     type="text"
-                    v-model="bodyData.code"
+                    v-model="formCode"
                   />
                 </div>
 
@@ -71,7 +75,7 @@
                   <input
                     class="w-full mt-2 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
                     type="text"
-                    v-model="bodyData.weight"
+                    v-model="formWeight"
                   />
                 </div>
 
@@ -82,7 +86,7 @@
                   <input
                     class="w-full mt-2 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
                     type="text"
-                    v-model="bodyData.week_food"
+                    v-model="formFood"
                   />
                 </div>
                 <div>
@@ -92,7 +96,7 @@
                   <input
                     class="w-full mt-2 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
                     type="text"
-                    v-model="bodyData.week_milk"
+                    v-model="formMilk"
                   />
                 </div>
               </div>
@@ -151,6 +155,11 @@ const bodyData = ref({})
 const loading = ref(true)
 const getId = parseInt(route.query.id)
 
+const formCode = ref(0)
+const formWeight = ref(0)
+const formMilk = ref(0)
+const formFood = ref(0)
+
 const goReturn = () => router.push("/")
 
 axios
@@ -158,6 +167,11 @@ axios
   .then(function (response) {
     loading.value = false
     bodyData.value = response.data.bull
+
+    formCode.value = response.data.bull.code
+    formWeight.value = response.data.bull.weight
+    formMilk.value = response.data.bull.week_milk
+    formFood.value = response.data.bull.week_food
   })
   .catch(function (error) {
     notify({
@@ -188,8 +202,28 @@ const deleteBull = (id) => {
     })
 }
 
-const register = () => {
-  //
+const updateBull = (id) => {
+  axios
+    .put(`${config.api.host}bull/update/${id}`, {
+      code: formCode.value,
+      weight: formWeight.value,
+      weekMilk: formMilk.value,
+      weekFood: formFood.value,
+    })
+    .then(function (response) {
+      notify({
+        type: "success",
+        title: `Atualizado`,
+        text: `As informações foram atualizadas com sucesso`,
+      })
+    })
+    .catch(function (error) {
+      notify({
+        type: "error",
+        title: "Falha na atualização !",
+        text: `Falha ao atualizar as informações do sistema`,
+      })
+    })
 }
 </script>
 <style scoped>

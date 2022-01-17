@@ -12,8 +12,11 @@
             <div class="p-3 bg-indigo-600 bg-opacity-75 rounded-full">!</div>
 
             <div class="mx-5">
-              <h4 class="text-2xl font-semibold text-gray-700">
-                {{ numberWithCommas(bodyData.readyTo.sign) }}
+              <h4
+                v-if="bodyData.readyTo.sign"
+                class="text-2xl font-semibold text-gray-700"
+              >
+                {{ bodyData.readyTo.sign }}
               </h4>
               <div class="text-gray-500">Possui 18 arrobas</div>
             </div>
@@ -70,7 +73,9 @@
     </div>
 
     <!-- Relatório geral -->
-    <h3 class="text-3xl font-medium text-gray-700">Relatório Semanal</h3>
+    <h3 class="margin-top text-3xl font-medium text-gray-700">
+      Relatório Semanal
+    </h3>
 
     <div class="mt-4">
       <div class="flex flex-wrap -mx-6">
@@ -159,3 +164,9 @@ axios
     })
   })
 </script>
+
+<style scoped>
+.margin-top {
+  margin-top: 50px;
+}
+</style>

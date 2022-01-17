@@ -197,7 +197,7 @@ class BullController extends AbstractController
         $bull = $this->BullRepository->findOneBy(['id' => $id]);
         $data = json_decode($request->getContent(), true);
 
-        $this->BullRepository->updateUpdate($bull, $data);
+        $this->BullRepository->updateBull($bull, $data);
 
         return new JsonResponse(['status' => 'bull updated!']);
     }
