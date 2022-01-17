@@ -14,7 +14,7 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create();
         $role = ['ADMIN', 'USER', 'MOD', 'VIP'];
-        $status = ['working', 'ready', 'dead'];
+        $status = ['alive', 'dead'];
 
         for ($i = 0; $i < 10; $i++) {
             $customer = new Customer();
@@ -28,14 +28,13 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 1500; $i++) {
             $bull = new Bull();
             $bull->setCode(abs(crc32(uniqid())));
-            $bull->setWeight(mt_rand(300, 1500));
-            $bull->setBirthday($faker->DateTime);
+            $bull->setWeight(mt_rand(200, 1000));
+            $bull->setBirthday($faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now'));
             $bull->setWeekMilk(mt_rand(0, 100));
-            $bull->setWeekFood(mt_rand(40, 100));
-            $bull->setStatus($status[mt_rand(0, 2)]);
+            $bull->setWeekFood(mt_rand(0, 60));
+            $bull->setStatus($status[mt_rand(0, 1)]);
             $manager->persist($bull);
         }
-
 
         $manager->flush();
     }

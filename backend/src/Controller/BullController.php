@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Knp\Component\Pager\PaginatorInterface;
+use Carbon\Carbon;
 
 /**
  * Class BullSiteController
@@ -59,10 +60,11 @@ class BullController extends AbstractController
             'id'         => $bull->getId(),
             'code'       => $bull->getCode(),
             'weight'     => $bull->getWeight(),
-            'birthday'   => $bull->getBirthday(),
             'week_milk'  => $bull->getWeekMilk(),
             'week_food'  => $bull->getWeekFood(),
-            'sign'       => round($bull->getWeight() * 0.5 / 15, 0),
+            'birthday'   => $bull->getBirthday(),
+            'status'     => $bull->getStatus(),
+            'sign'       => $this->getSign($bull->getWeight()),
         ];
 
         return new JsonResponse(['bull' => $data], Response::HTTP_OK);
@@ -90,8 +92,9 @@ class BullController extends AbstractController
                 'weight'     => $bull->getWeight(),
                 'week_milk'  => $bull->getWeekMilk(),
                 'week_food'  => $bull->getWeekFood(),
-                'sign'       => round($bull->getWeight() * 0.5 / 15, 0),
                 'birthday'   => $bull->getBirthday(),
+                'status'     => $bull->getStatus(),
+                'sign'       => $this->getSign($bull->getWeight()),
             ];
         }
 
@@ -117,16 +120,84 @@ class BullController extends AbstractController
                 'id'         => $bull->getId(),
                 'code'       => $bull->getCode(),
                 'weight'     => $bull->getWeight(),
-                'birthday'   => $bull->getBirthday(),
                 'week_milk'  => $bull->getWeekMilk(),
                 'week_food'  => $bull->getWeekFood(),
-                'sign'       => round($bull->getWeight() * 0.5 / 15, 0),
+                'birthday'   => $bull->getBirthday(),
+                'status'     => $bull->getStatus(),
+                'sign'       => $this->getSign($bull->getWeight()),
             ];
         }
 
         return new JsonResponse(['bulls' => $data], Response::HTTP_OK);
     }
+    /**
+     * @Route("/get-report", name="get_report_bulls", methods={"GET"})
+     */
+    public function getBullsReport(): JsonResponse
+    {
+        $bulls = $this->BullRepository->findAll();
 
+        $weekMilk = 0;
+        $weekFood = 0;
+        $weekDead = 0;
+        $totalOlder = 0;
+        $totalSign = 0;
+        $totalMilk = 0;
+        $totalMilkFood = 0;
+
+        foreach ($bulls as $bull) {
+            $weekMilk += $bull->getWeekMilk();
+            $weekFood += $bull->getWeekFood();
+
+            if ($bull->getStatus() == 'dead') {
+                $weekDead++;
+            }
+
+            if (Carbon::parse($bull->getBirthday())->age > 5) {
+                $totalOlder++;
+            }
+
+            if ($this->getSign($bull->getWeight()) > 18) {
+                $totalSign++;
+            }
+
+            if ($bull->getWeekMilk() < 40) {
+                $totalMilk++;
+            }
+
+            if ($bull->getWeekMilk() < 70 && $bull->getWeekFood() > 50) {
+                $totalMilkFood++;
+            }
+
+            $data = [
+                'weight'     => $bull->getWeight(),
+                'week_milk'  => $bull->getWeekMilk(),
+                'week_food'  => $bull->getWeekFood(),
+                'birthday'   => $bull->getBirthday(),
+                'status'     => $bull->getStatus(),
+                'sign'       => $this->getSign($bull->getWeight()),
+            ];
+        }
+
+        $data = [
+
+            'readyTo' => [
+                'older' => $totalOlder,
+                'sign' => $totalSign,
+                'milk' => $totalMilk,
+                'food_milk' => $totalMilkFood,
+            ],
+            'week' => [
+                'milk' => $weekMilk,
+                'food' => $weekFood,
+                'dead' => $weekDead,
+            ],
+
+
+        ];
+
+        return new JsonResponse(['report' => $data], Response::HTTP_OK);
+    }
     /**
      * @Route("/update/{id}", name="update_bull", methods={"PUT"})
      */
@@ -150,5 +221,16 @@ class BullController extends AbstractController
         $this->BullRepository->removeBull($bull);
 
         return new JsonResponse(['status' => 'bull deleted']);
+    }
+
+    private function getAge($datetime)
+    {
+
+        return $datetime;
+    }
+    private function getSign($weight)
+    {
+        $sign = round($weight * 0.5 / 15, 0);
+        return $sign;
     }
 }

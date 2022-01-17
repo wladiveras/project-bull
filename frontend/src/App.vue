@@ -2,6 +2,7 @@
   <component :is="layout">
     <router-view />
   </component>
+  <notifications position="bottom right" />
 </template>
 
 <script setup lang="ts">
@@ -12,7 +13,5 @@ const defaultLayout = "default"
 
 const { currentRoute } = useRouter()
 
-const layout = computed(
-  () => `${currentRoute.value.meta.layout || defaultLayout}-layout`
-)
+const layout = computed(() => `${currentRoute.value.meta.layout || defaultLayout}-layout`)
 </script>

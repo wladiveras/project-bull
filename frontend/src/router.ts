@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
 
 import Dashboard from "./views/Dashboard.vue"
-import Forms from "./views/Forms.vue"
+import Manager from "./views/Manager.vue"
 import Tables from "./views/Tables.vue"
 import UIElements from "./views/UIElements.vue"
 import Login from "./views/Login.vue"
@@ -17,19 +17,14 @@ const routes: RouteRecordRaw[] = [
     component: Dashboard,
   },
   {
-    path: "/forms",
-    name: "Forms",
-    component: Forms,
+    path: "/manager",
+    name: "Manager",
+    component: Manager,
   },
   {
     path: "/cards",
     name: "Cards",
     component: Card,
-  },
-  {
-    path: "/tables",
-    name: "Tables",
-    component: Tables,
   },
   {
     path: "/ui-elements",

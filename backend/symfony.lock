@@ -127,6 +127,9 @@
             "config/packages/nelmio_cors.yaml"
         ]
     },
+    "nesbot/carbon": {
+        "version": "2.55.2"
+    },
     "nikic/php-parser": {
         "version": "v4.13.2"
     },
