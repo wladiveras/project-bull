@@ -8,21 +8,16 @@
       <h4>
         Status :
         <span
-          v-if="bodyData.status === 'dead'"
-          class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full"
-        >
-          Pronto pro abate
-        </span>
-        <span
-          v-else-if="
-            bodyData.week_milk < 40 ||
-            (bodyData.week_milk < 70 && bodyData.week_food > 40) ||
-            bodyData.age > 5 ||
-            bodyData.sign > 18
-          "
+          v-if="bodyData.status_mock === 'dead'"
           class="inline-flex px-2 text-xs font-semibold leading-5 text-gray-800 bg-gray-100 rounded-full"
         >
           Abatido
+        </span>
+        <span
+          v-else-if="bodyData.status_mock === 'ready'"
+          class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full"
+        >
+          > Pronto para o abate
         </span>
         <span
           v-else
@@ -59,13 +54,14 @@
               />
             </div>
 
-            <form @submit.prevent="updateBull(bodyData.id)">
+            <form @submit.prevent="">
               <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
                 <div>
                   <label class="text-gray-700"> IDentificação </label>
                   <input
                     class="w-full mt-2 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
                     type="text"
+                    v-maska="'##########'"
                     v-model="formCode"
                   />
                 </div>
@@ -75,6 +71,7 @@
                   <input
                     class="w-full mt-2 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
                     type="text"
+                    v-maska="'#####'"
                     v-model="formWeight"
                   />
                 </div>
@@ -86,6 +83,7 @@
                   <input
                     class="w-full mt-2 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
                     type="text"
+                    v-maska="'#####'"
                     v-model="formFood"
                   />
                 </div>
@@ -96,6 +94,7 @@
                   <input
                     class="w-full mt-2 border-gray-200 rounded-md focus:border-indigo-600 focus:ring focus:ring-opacity-40 focus:ring-indigo-500"
                     type="text"
+                    v-maska="'#####'"
                     v-model="formMilk"
                   />
                 </div>
@@ -114,21 +113,17 @@
                 >
                   deletar
                 </button>
+
                 <button
-                  @click="goReturn()"
-                  v-if="
-                    bodyData.week_milk < 40 ||
-                    (bodyData.week_milk < 70 && bodyData.week_food > 40) ||
-                    bodyData.age > 5 ||
-                    bodyData.sign > 18 ||
-                    bodyData.status != 'dead'
-                  "
-                  class="px-4 py-2 text-green-200 bg-green-400 rounded-md hover:bg-green-700 focus:outline-none focus:bg-green-700 margin-right"
+                  @click="goToSlaughter(getId)"
+                  v-if="bodyData.status_mock === 'ready'"
+                  class="px-4 py-2 text-gray-200 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700 margin-right"
                 >
                   Enviar ao abate
                 </button>
                 <button
-                  class="px-4 py-2 text-gray-200 bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700 margin-right"
+                  @click="updateBull(bodyData.id)"
+                  class="px-4 py-2 text-green-200 bg-green-400 rounded-md hover:bg-green-700 focus:outline-none focus:bg-green-700 margin-right"
                 >
                   Salvar alteração
                 </button>
@@ -146,8 +141,10 @@ import { defineComponent, ref } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import config from "../config"
 import axios from "axios"
+
 import { notify } from "@kyvg/vue3-notification"
 import { NSpin } from "naive-ui"
+import { mask } from "maska"
 
 const router = useRouter()
 const route = useRoute()
@@ -159,8 +156,6 @@ const formCode = ref(0)
 const formWeight = ref(0)
 const formMilk = ref(0)
 const formFood = ref(0)
-
-const goReturn = () => router.push("/")
 
 axios
   .get(`${config.api.host}bull/get/${getId}`)
@@ -182,8 +177,11 @@ axios
     goReturn()
   })
 
-const deleteBull = (id) => {
-  axios
+// == [ Methods ] ===========================================>
+const goReturn = () => router.push("/")
+
+const deleteBull = async (id) => {
+  await axios
     .delete(`${config.api.host}bull/delete/${id}`)
     .then(function (response) {
       notify({
@@ -202,8 +200,31 @@ const deleteBull = (id) => {
     })
 }
 
-const updateBull = (id) => {
-  axios
+const goToSlaughter = async (id) => {
+  bodyData.status = "dead"
+  await axios
+    .put(`${config.api.host}bull/update/${id}`, {
+      status: "dead",
+    })
+    .then(function (response) {
+      notify({
+        type: "success",
+        title: `Tudo certo`,
+        text: `Animal enviado para o abate`,
+      })
+      goReturn()
+    })
+    .catch(function (error) {
+      notify({
+        type: "error",
+        title: "Falha !",
+        text: `Houve um problema ao enviar o animal ao abate`,
+      })
+    })
+}
+
+const updateBull = async (id) => {
+  await axios
     .put(`${config.api.host}bull/update/${id}`, {
       code: formCode.value,
       weight: formWeight.value,
@@ -216,6 +237,7 @@ const updateBull = (id) => {
         title: `Atualizado`,
         text: `As informações foram atualizadas com sucesso`,
       })
+      goReturn()
     })
     .catch(function (error) {
       notify({
@@ -229,5 +251,9 @@ const updateBull = (id) => {
 <style scoped>
 .margin-right {
   margin-right: 10px;
+}
+
+.dead-text {
+  text-decoration: line-through;
 }
 </style>

@@ -48,7 +48,19 @@ class BullController extends AbstractController
 
         return new JsonResponse(['status' => 'bull added!'], Response::HTTP_CREATED);
     }
+    /**
+     * @Route("/get/id/{code}", name="get_one_bull_by_code", methods={"GET"})
+     */
+    public function getIdByCode($code): JsonResponse
+    {
+        $bull = $this->BullRepository->findOneBy(['code' => $code]);
 
+        $data = [
+            'id' => $bull->getId(),
+        ];
+
+        return new JsonResponse(['bull' => $data], Response::HTTP_OK);
+    }
     /**
      * @Route("/get/{id}", name="get_one_bull", methods={"GET"})
      */
@@ -64,8 +76,9 @@ class BullController extends AbstractController
             'week_food'  => $bull->getWeekFood(),
             'birthday'   => Carbon::parse($bull->getBirthday())->format('d-m-Y'),
             'age'        => Carbon::parse($bull->getBirthday())->age,
-            'status'     => $bull->getStatus(),
             'sign'       => $this->getSign($bull->getWeight()),
+            'status'     => $bull->getStatus(),
+            'status_mock' => $this->statusFilter($bull->getWeekMilk(), $bull->getWeekFood(), $bull->getBirthday(), $bull->getWeight(),  $bull->getStatus()),
         ];
 
         return new JsonResponse(['bull' => $data], Response::HTTP_OK);
@@ -95,8 +108,9 @@ class BullController extends AbstractController
                 'week_food'  => $bull->getWeekFood(),
                 'birthday'   => Carbon::parse($bull->getBirthday())->format('d-m-Y'),
                 'age'        => Carbon::parse($bull->getBirthday())->age,
-                'status'     => $bull->getStatus(),
                 'sign'       => $this->getSign($bull->getWeight()),
+                'status'     => $bull->getStatus(),
+                'status_mock' => $this->statusFilter($bull->getWeekMilk(), $bull->getWeekFood(), $bull->getBirthday(), $bull->getWeight(),  $bull->getStatus()),
             ];
         }
 
@@ -126,8 +140,9 @@ class BullController extends AbstractController
                 'week_food'  => $bull->getWeekFood(),
                 'birthday'   => Carbon::parse($bull->getBirthday())->format('d-m-Y'),
                 'age'        => Carbon::parse($bull->getBirthday())->age,
-                'status'     => $bull->getStatus(),
                 'sign'       => $this->getSign($bull->getWeight()),
+                'status'     => $bull->getStatus(),
+                'status_mock' => $this->statusFilter($bull->getWeekMilk(), $bull->getWeekFood(), $bull->getBirthday(), $bull->getWeight(),  $bull->getStatus()),
             ];
         }
 
@@ -214,14 +229,24 @@ class BullController extends AbstractController
         return new JsonResponse(['status' => 'bull deleted']);
     }
 
-    private function getAge($datetime)
-    {
-
-        return $datetime;
-    }
+    // Common Functions
     private function getSign($weight)
     {
         $sign = round($weight * 0.5 / 15, 0);
         return $sign;
+    }
+
+    private function statusFilter($weekMilk, $weekFood, $birthday, $weight, $status)
+    {
+        $bullAge  = Carbon::parse($birthday)->age;
+        $bullSing = $this->getSign($weight);
+
+        if ($status === 'dead') {
+            return 'dead';
+        } elseif ($weekMilk < 40 || ($weekMilk < 70 and $weekFood > 50) || $bullAge > 5 || $bullSing > 18) {
+            return 'ready';
+        } else {
+            return 'working';
+        }
     }
 }

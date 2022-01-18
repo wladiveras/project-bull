@@ -51,7 +51,7 @@ class BullRepository extends ServiceEntityRepository
         empty($data['birthday'])  ? true : $bull->setBirthday($data['birthday']);
         empty($data['weekMilk'])  ? true : $bull->setWeekMilk($data['weekMilk']);
         empty($data['weekFood'])  ? true : $bull->setWeekFood($data['weekFood']);
-        empty($data['status'])    ? true : $bull->setWeekFood($data['status']);
+        empty($data['status'])    ? true : $bull->setStatus($data['status']);
         $this->manager->flush();
     }
 

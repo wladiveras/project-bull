@@ -96,21 +96,16 @@
                   class="px-6 py-4 border-b border-gray-200 whitespace-nowrap"
                 >
                   <span
-                    v-if="bull.status === 'dead'"
-                    class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full"
-                  >
-                    Pronto pro abate
-                  </span>
-                  <span
-                    v-else-if="
-                      bull.week_milk < 40 ||
-                      (bull.week_milk < 70 && bull.week_food > 40) ||
-                      bull.age > 5 ||
-                      bull.sign > 18
-                    "
+                    v-if="bull.status_mock === 'dead'"
                     class="inline-flex px-2 text-xs font-semibold leading-5 text-gray-800 bg-gray-100 rounded-full"
                   >
                     Abatido
+                  </span>
+                  <span
+                    v-else-if="bull.status_mock === 'ready'"
+                    class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full"
+                  >
+                    Pronto pro abate
                   </span>
                   <span
                     v-else
