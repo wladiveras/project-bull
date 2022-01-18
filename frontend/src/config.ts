@@ -1,6 +1,6 @@
 const config = {
   api: {
-    host: "http://localhost:8080/",
+    host: "https://bullsapi.wladiveras.com/",
   },
 }
 

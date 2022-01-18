@@ -40,7 +40,7 @@
         <div class="px-6 py-4 text-left modal-content">
           <!--Title-->
           <div class="flex items-center justify-between pb-3">
-            <p class="text-2xl font-bold">{{ modalTitle }}</p>
+            <p class="text-2xl font-bold">Adicionar Animal</p>
             <div
               class="z-50 cursor-pointer modal-close"
               @click="isOpen = false"
@@ -100,7 +100,7 @@
               @click="isOpen = false"
               class="p-3 px-6 py-3 mr-2 text-indigo-500 bg-transparent rounded-lg hover:bg-gray-100 hover:text-indigo-400 focus:outline-none"
             >
-              {{ closeButtonText }}
+              Fechar
             </button>
             <button
             v-if="!isFinished"
@@ -126,8 +126,6 @@ import axios from "axios"
 import { notify } from "@kyvg/vue3-notification"
 import { mask } from "maska"
 
-const modalTitle = ref("Adicionar Animal")
-
 const router = useRouter()
 const dropdownOpen = ref(false)
 const searchInput = ref("")
@@ -139,7 +137,6 @@ const formFood = ref("")
 const formWeight = ref("")
 const formBirthday = ref("")
 const bullCode = ref("")
-const closeButtonText = ref("Cancelar")
 
 const openModal = () =>{
   isOpen.value = true
@@ -151,8 +148,6 @@ const openModal = () =>{
   formWeight.value = ""
   formBirthday.value = ""
   bullCode.value = ""
-  modalTitle = "Adicionar Animal"
-  closeButtonText = "Cancelar"
 }
 
 const onInsert = () => {
@@ -174,8 +169,6 @@ const datetime = format(formBirthday.value, 'yyyy-MM-dd HH:mm:ss');
       })
 
     bullCode.value = response.data.code
-    modalTitle.value = "Animal Registrado"
-    closeButtonText.value = "Fechar"
     isFinished.value = true
     
     axios
