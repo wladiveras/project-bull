@@ -34,8 +34,9 @@ class BullController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $code = $data['code'];
-        $weight = $data['weight'];
+
+        $code = abs(crc32(uniqid()));
+        $weight = date($data['weight']);
         $birthday = $data['birthday'];
         $weekMilk = $data['weekMilk'];
         $weekFood = $data['weekFood'];
@@ -46,7 +47,7 @@ class BullController extends AbstractController
 
         $this->BullRepository->saveBull($code, $weight, $birthday, $weekMilk, $weekFood);
 
-        return new JsonResponse(['status' => 'bull added!'], Response::HTTP_CREATED);
+        return new JsonResponse(['code' => $code, 'status' => 'bull added!'], Response::HTTP_CREATED);
     }
     /**
      * @Route("/get/id/{code}", name="get_one_bull_by_code", methods={"GET"})

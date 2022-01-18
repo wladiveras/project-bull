@@ -2,7 +2,7 @@
   <div>
     <NSpin class="pagination-container__list" :show="loading">
       <h3 class="flex justify-center text-3xl font-semibold text-gray-700">
-        Identificação: 43959345
+        Identificação: {{ formCode }}
       </h3>
 
       <h4>
@@ -17,7 +17,7 @@
           v-else-if="bodyData.status_mock === 'ready'"
           class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full"
         >
-          > Pronto para o abate
+          Pronto para o abate
         </span>
         <span
           v-else

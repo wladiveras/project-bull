@@ -36,9 +36,10 @@ class BullRepository extends ServiceEntityRepository
         $newBull
             ->setCode($code)
             ->setWeight($weight)
-            ->setBirthday($birthday)
             ->setWeekMilk($weekMilk)
-            ->setWeekFood($weekFood);
+            ->setWeekFood($weekFood)
+            ->setBirthday($birthday)
+            ->setStatus('alive');
 
         $this->manager->persist($newBull);
         $this->manager->flush();

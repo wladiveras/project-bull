@@ -126,21 +126,25 @@
       </div>
     </div>
 
-    <div class="mt-8"></div>
+    <div class="mt-8 margin-list"></div>
 
     <div class="flex flex-col mt-8">
-      <!---->
+      <div class="flex items-center">
+        <!-- Modal -->
+        <BullsInsert />
+      </div>
+      <!-- List --->
       <BullsList />
-      <!---->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue"
+import { ref, computed, watch, onBeforeMount } from "vue"
 import axios from "axios"
 import config from "../config"
 import BullsList from "../components/dashboard/BullsList.vue"
+import BullsInsert from "../components/dashboard/bullsInsert.vue"
 import { notify } from "@kyvg/vue3-notification"
 
 const loading = ref(false)
@@ -150,23 +154,31 @@ const numberWithCommas = (x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-axios
-  .get(`${config.api.host}bull/get-report`)
-  .then(function (response) {
-    loading.value = false
-    bodyData.value = response.data.report
-  })
-  .catch(function (error) {
-    notify({
-      type: "error",
-      title: "Falha ao carregar dados",
-      text: `Falha ao carregar informações, tente novamente mais tarde.`,
+onBeforeMount(() => {
+  axios
+    .get(`${config.api.host}bull/get-report`)
+    .then(function (response) {
+      loading.value = false
+      bodyData.value = response.data.report
     })
-  })
+    .catch(function (error) {
+      notify({
+        type: "error",
+        title: "Falha ao carregar dados",
+        text: `Falha ao carregar informações, tente novamente mais tarde.`,
+      })
+    })
+})
 </script>
 
 <style scoped>
 .margin-top {
   margin-top: 50px;
+}
+.margin-list {
+  margin-top: 100px;
+}
+.modal {
+  transition: opacity 0.25s ease;
 }
 </style>

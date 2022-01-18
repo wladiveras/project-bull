@@ -36,12 +36,14 @@ class Bull
      * @ORM\Column(type="integer")
      */
     private $week_food;
+
     /**
      * @ORM\Column(type="string", length=255)
      */
     private $status;
+
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="string", length=255)
      */
     private $birthday;
 
@@ -74,12 +76,12 @@ class Bull
         return $this;
     }
 
-    public function getBirthday(): ?\DateTimeInterface
+    public function getBirthday(): ?string
     {
         return $this->birthday;
     }
 
-    public function setBirthday(\DateTimeInterface $birthday): self
+    public function setBirthday(?string $birthday): self
     {
         $this->birthday = $birthday;
 
